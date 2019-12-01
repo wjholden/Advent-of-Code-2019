@@ -1,6 +1,6 @@
 using DelimitedFiles
 
-input = readdlm("input.txt",' ',Int,'\n');
+input = readdlm("input.txt", ' ', Int, '\n');
 
 # Part 1
 fuel_required(mass) = (mass ÷ 3) - 2;
@@ -16,3 +16,4 @@ println("Part 2: ", part2)
 # Notice something interesting: the part 2 function does not distribute. That is, you cannot compute
 #   fuel_required_2(part1) + part1
 # to get part2. 
+# https://twitter.com/wjholdentech/status/1201023263633219585
