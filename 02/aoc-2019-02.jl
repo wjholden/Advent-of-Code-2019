@@ -3,8 +3,7 @@ using DelimitedFiles
 input = readdlm("input.txt", ',', Int, '\n');
 input = vec(input)
 
-# Part 1
-mutable struct Opcode
+struct Opcode
     f::Function
     n::Int
 end
@@ -34,13 +33,15 @@ function run(code)
 end
 
 const tests = ["1,9,10,3,2,3,11,0,99,30,40,50", "1,0,0,0,99", "2,3,0,3,99", "2,4,4,5,99,0", "1,1,1,4,99,5,6,0,99"];
-
 #run(parse.(Int,split(tests[5],",")))
+
+# Part 1
 part1 = copy(input);
 part1[2] = 12;
 part1[3] = 2;
 println("Part 1: $(run(part1)[1])");
 
+# Part 2
 # I had hoped for something more elegant. Mathematica might have been a good way to solve
 # a problem like this with symbolic computation. If I were an expert on z3 I would have
 # constructed constraints.
