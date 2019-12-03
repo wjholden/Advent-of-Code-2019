@@ -3,31 +3,23 @@ using DelimitedFiles
 input = readdlm("input.txt", ',', Int, '\n');
 input = vec(input)
 
-struct Opcode
-    f::Function
-    n::Int
-end
-
 const intcode = Dict([
-    (1, Opcode(+, 4)),
-    (2, Opcode(*, 4)),
-    (99, Opcode(Base.identity, 1))
+    (1, (f=+, n=4)),
+    (2, (f=*, n=4)),
+    (99, (f=Base.identity, n=1))
 ]);
 
-function run(code)
-    p::Int = 1;
-    c = copy(code);
-    #println(c);
+function run(code, noun, verb)
+    p::Int = 1; # instruction pointer
+    c = copy(code); # copy so we can mutate the input
+    c[2] = noun;
+    c[3] = verb;
     while (inst = c[p]) != 99
-        #println("p = $p")
+        # Sometimes a 1-indexed language is really annoying.
         reg = (left = c[p+1], right = c[p+2], dst = c[p+3]);
-        #println("Registers: $reg");
         val = (left = c[reg.left + 1], right = c[reg.right + 1]);
-        #println("Values:    $val");
         c[reg.dst + 1] = intcode[inst].f(val.left, val.right);
-        
         p += intcode[inst].n
-        #println(c)
     end
     return c
 end
@@ -36,10 +28,7 @@ const tests = ["1,9,10,3,2,3,11,0,99,30,40,50", "1,0,0,0,99", "2,3,0,3,99", "2,4
 #run(parse.(Int,split(tests[5],",")))
 
 # Part 1
-part1 = copy(input);
-part1[2] = 12;
-part1[3] = 2;
-println("Part 1: $(run(part1)[1])");
+println("Part 1: $(run(input, 12, 2)[1])");
 
 # Part 2
 # I had hoped for something more elegant. Mathematica might have been a good way to solve
@@ -47,10 +36,7 @@ println("Part 1: $(run(part1)[1])");
 # constructed constraints.
 for noun in 0:100
     for verb in 0:100
-        part2 = copy(input);
-        part2[2] = noun;
-        part2[3] = verb;
-        if run(part2)[1] == 19690720
+        if run(input, noun, verb)[1] == 19690720
             println("Part 2: Solution is at noun=$noun verb=$verb")
             println("Part 2: $(100 * noun + verb)");
             return 100 * noun + verb;
