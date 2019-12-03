@@ -1,12 +1,7 @@
 using DelimitedFiles
 
 input = readdlm(ARGS[1], ',', String, '\n');
-function parseDirection(element::String)
-    return (h=element[1],
-        δ=parse(Int, element[2:end]))
-        # * ((element[1] == 'U' || element[1] == 'R') ? 1 : -1))
-        # ((element[1] == 'U' || element[1] == 'D') ? im : 1)
-end
+parseDirection(element::String) = (h=element[1], δ=parse(Int, element[2:end]))
 wire1 = input[1, :];
 wire2 = input[2, :];
 if (wire2[end] == "")
@@ -36,10 +31,7 @@ path1 = explore(wire1)
 path2 = explore(wire2)
 crosses = collect(intersect(keys(path1), keys(path2)))
 
-function manhattan(p)
-    return abs(real(p)) + abs(imag(p))
-end
-
+manhattan(p) = abs(real(p)) + abs(imag(p))
 distances = map(manhattan, crosses)
 println("Part 1: $(findmin(distances)[1])")
 
