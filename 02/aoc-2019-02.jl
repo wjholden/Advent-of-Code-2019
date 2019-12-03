@@ -16,9 +16,12 @@ function run(code, noun, verb)
     c[3] = verb;
     while (inst = c[p]) != 99
         # Sometimes a 1-indexed language is really annoying.
-        reg = (left = c[p+1], right = c[p+2], dst = c[p+3]);
-        val = (left = c[reg.left + 1], right = c[reg.right + 1]);
-        c[reg.dst + 1] = intcode[inst].f(val.left, val.right);
+        if (intcode[inst].n == 4)
+            # Facilitates a future intcode that accepts fewer than three parameters.
+            reg = (left = c[p+1], right = c[p+2], dst = c[p+3]);
+            val = (left = c[reg.left + 1], right = c[reg.right + 1]);
+            c[reg.dst + 1] = intcode[inst].f(val.left, val.right);
+        end
         p += intcode[inst].n
     end
     return c
@@ -37,8 +40,7 @@ println("Part 1: $(run(input, 12, 2)[1])");
 for noun in 0:100
     for verb in 0:100
         if run(input, noun, verb)[1] == 19690720
-            println("Part 2: Solution is at noun=$noun verb=$verb")
-            println("Part 2: $(100 * noun + verb)");
+            println("Part 2: $(100 * noun + verb) at noun=$noun verb=$verb");
             return 100 * noun + verb;
         end
     end
