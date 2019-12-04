@@ -7,8 +7,6 @@ function splitInt(i::Int)
     return a
 end
 
-#lower = parse(Int, ARGS[1])
-#upper = parse(Int, ARGS[2])
 lower = 271973
 upper = 785961
 
@@ -16,23 +14,18 @@ upper = 785961
 containsConsecutive(a) = (a[1] == a[2]) || (a[2] == a[3]) ||
     (a[3] == a[4]) || (a[4] == a[5]) || (a[5] == a[6])
 
+# Rule 2: digits in the string must be in non-decreasing order
 increasing(a) = a[1] <= a[2] <= a[3] <= a[4] <= a[5] <= a[6]
 
-function scanGroups(a::Int)
-    return scanGroups(splitInt(a), 1)
-end
-
-function scanGroups(a, start::Int)
-    if length(a) < start
-        return true
-    else
-        i = start
-        c = a[i]
-        while i <= length(a) && a[i] == c
-            i = i + 1
-        end
-        return (2 < i - start && (i - start) % 2 == 1) ? false : scanGroups(a, i)
+# Rule 3 (part 2): only pairs count, not triples or longer matches.
+function containsPair(i::Int)
+    if i == 0 return false end
+    current = i % 10
+    matches = 0
+    while (i ÷ (10^matches)) % 10 == current
+        matches = matches + 1
     end
+    return matches == 2 || containsPair(i ÷ (10^matches))
 end
 
 function countCombinations(lower::Int, upper::Int)
@@ -49,9 +42,12 @@ end
 combinations = countCombinations(lower, upper)
 println("Part 1: $(length(combinations))") # 925
 
-grouped = filter(scanGroups, combinations)
+grouped = filter(containsPair, combinations)
 println("Part 2: $(length(grouped))")
-println(grouped)
-# part 2 is not 358. Also not 507 (too low) or 548 (too low)
-# This program does NOT produce a correct answer. I don't know why not,
-# but I need to run to work now.
+# This one turned out to be more challenging for me than it should have.
+# I had misinterpreted the specification for part 2. I thought that
+# the groups could not be length 3, but that two groups of 2 next to each
+# other would be OK somehow. As in, "567777" would be a satisfying assignment.
+# I was wrong.
+# I'm kind of OK with my algorithm to match pairs. It does not easily
+# generalize to arbitrary strings.
