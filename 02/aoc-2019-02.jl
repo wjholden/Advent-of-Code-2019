@@ -1,6 +1,6 @@
 using DelimitedFiles
 
-input = readdlm("input.txt", ',', Int, '\n');
+input = readdlm(ARGS[1], ',', Int, '\n');
 input = vec(input)
 
 const intcode = Dict([
