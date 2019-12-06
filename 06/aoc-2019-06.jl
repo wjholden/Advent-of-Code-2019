@@ -1,5 +1,4 @@
-using DelimitedFiles;
-using Memoize;
+using DelimitedFiles, Memoize;
 
 input = readdlm(ARGS[1], ')', String, '\n');
 
