@@ -1,8 +1,7 @@
 using DelimitedFiles
 using Combinatorics
 
-inputs = Array{Int}(undef, 1);
-outputs = [];
+STANDARD_IO = false
 
 function modalize(code, parameters, modes)
     # an effort to make the ternary instructions a little less repetitive.
@@ -11,31 +10,38 @@ function modalize(code, parameters, modes)
     return (left, right)
 end
 
-function intcodeAdd(code, parameters, modes, p::Int)
+function intcodeAdd(code, parameters, modes, p::Int, inputs, outputs)
     (left, right) = modalize(code, parameters, modes)
     code[parameters[3] + 1] = left + right
     return p + intcode[code[p] % 100].n
 end
 
-function intcodeMultiply(code, parameters, modes, p::Int)
+function intcodeMultiply(code, parameters, modes, p::Int, inputs, outputs)
     (left, right) = modalize(code, parameters, modes)
     code[parameters[3] + 1] = left * right
     return p + intcode[code[p] % 100].n
 end
 
-function intcodeInput(code, parameters, modes, p::Int)
-    code[parameters[1] + 1] = popfirst!(inputs)
+function intcodeInput(code, parameters, modes, p::Int, inputs, outputs)
+    # If the "inputs" array contains something, take it. Otherwise we can read from stdin.
+    if STANDARD_IO && isempty(inputs)
+        code[parameters[1] + 1] = parse(Int, readline())
+    else
+        code[parameters[1] + 1] = popfirst!(inputs)
+    end
     return p + intcode[code[p] % 100].n
 end
 
-function intcodeOutput(code, parameters, modes, p::Int)
+function intcodeOutput(code, parameters, modes, p::Int, inputs, outputs)
     left = modes[1] == 1 ? parameters[1] : code[parameters[1] + 1];
-    #println("Intcode output: $(left)")
+    if STANDARD_IO
+        println(left)
+    end
     push!(outputs, left)
     return p + intcode[code[p] % 100].n
 end
 
-function intcodeJumpIfTrue(code, parameters, modes, p::Int)
+function intcodeJumpIfTrue(code, parameters, modes, p::Int, inputs, outputs)
     (left, right) = modalize(code, parameters, modes)
     if left != 0
         return right + 1
@@ -44,7 +50,7 @@ function intcodeJumpIfTrue(code, parameters, modes, p::Int)
     end
 end
 
-function intcodeJumpIfFalse(code, parameters, modes, p::Int)
+function intcodeJumpIfFalse(code, parameters, modes, p::Int, inputs, outputs)
     (left, right) = modalize(code, parameters, modes)
     if left == 0
         return right + 1
@@ -53,19 +59,19 @@ function intcodeJumpIfFalse(code, parameters, modes, p::Int)
     end
 end
 
-function intcodeLessThan(code, parameters, modes, p::Int)
+function intcodeLessThan(code, parameters, modes, p::Int, inputs, outputs)
     (left, right) = modalize(code, parameters, modes)
     code[parameters[3] + 1] = Int(left < right);
     return p + intcode[code[p] % 100].n
 end
 
-function intcodeEquals(code, parameters, modes, p::Int)
+function intcodeEquals(code, parameters, modes, p::Int, inputs, outputs)
     (left, right) = modalize(code, parameters, modes)
     code[parameters[3] + 1] = Int(left == right);
     return p + intcode[code[p] % 100].n
 end
 
-function intcodeExit(code, parameters, modes, p::Int)
+function intcodeExit(code, parameters, modes, p::Int, inputs, outputs)
     Base.identity("Do nothing")
     return p + intcode[code[p] % 100].n
 end
@@ -90,26 +96,22 @@ function run(code, noun=missing, verb=missing)
     return run(c);
 end
 
-function run(code)
+function run(code, inputs=[], outputs=[])
     p::Int = 1; # instruction pointer
-    global outputs = []
     while (inst = code[p]) != 99
-        #println(c)
         opcode = inst % 100;
         parameters = view(code, (p + 1):(p + intcode[opcode].n - 1));
         modes = ((inst ÷ 100) % 10,
             (inst ÷ 1000) % 10,
             (inst ÷ 10000) % 10);
-        #println("{IP=$(p)} $(intcode[opcode].name) ($(inst)): $(parameters)");
-        p = intcode[opcode].f(code, parameters, modes, p);
+        p = intcode[opcode].f(code, parameters, modes, p, inputs, outputs);
     end
-    #println(c)
-    return code
+    return (code,outputs)
 end
 
-function bruteForce(code)
+function bruteForce(code, phaseSettings::UnitRange{Int})
     maxSignal = (-1, undef)
-    for order in permutations(0:4)
+    for order in permutations(phaseSettings)
         signal = chainAmplifiers(code, order)
         if (signal > maxSignal[1])
             maxSignal = (signal, order)
@@ -122,9 +124,7 @@ function chainAmplifiers(code, sequence)
     inputSignal = 0
     for phaseSetting in sequence
         c = copy(code)
-        global inputs = [phaseSetting, inputSignal];
-        run(c)
-        inputSignal = popfirst!(outputs)
+        inputSignal = popfirst!(run(c, [phaseSetting, inputSignal], [])[2])
     end
     return inputSignal
 end
@@ -132,11 +132,6 @@ end
 const examples = ["3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0",
 "3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0",
 "3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0"]
-
-#for ex in examples
-#    code = parse.(Int,split(ex,","));
-#    println(map(order -> bruteForce(code, order), permutations(0:4)))
-#end
 
 #=
 Example 1:
@@ -162,29 +157,39 @@ Example 2:
 4,23,           ; output vm[23]
 99,0,0          ; exit
 ----------------;
-
-Day 1 Part 1:
-----------------;
-1101,0,0,1,     ; vm[1] = 0 + 0 (vm[1] := counter for inputs)
-1101,0,0,2,     ; vm[2] = 0 + 0 (vm[2] := register for inputs)
-
-; brute force division gadget.
-function(value, divisor)
-vm[multiplier] = 0
-vm[product] = vm[multiplier] * divisor
-ilt(vm[product], value) vm[jump] = 1
-jump-if-true vm[jump] end
-vm[multiplier] = vm[multiplier] + 1
-jump-if-true vm[multiplier]
-:end
-output(vm[multiplier])
-
 =#
 
-for i in 1:length(examples)
-    print("Day 7 Example $(i): ");
-    println(bruteForce(parse.(Int,split(examples[i],","))))
+if length(ARGS) == 0
+    # To get part 1, provide no command-line arguments.
+    for i in 1:length(examples)
+        print("Day 7 Example $(i): ");
+        println(bruteForce(parse.(Int,split(examples[i],",")), 0:4))
+    end
+
+    print("Day 7 Part 1:    ");
+    println(bruteForce(vec(readdlm("input.txt", ',', Int, '\n')), 0:4))
+else
+    # For part 2, provide two command-line arguments.
+    # The first is the source code you want to run.
+    # The second through final arguments will be read as input values.
+    # Here, the program will read and write to the host OS stdin/stdout.
+    STANDARD_IO = true
+    inputs = parse.(Int, ARGS[2:end])
+    run(vec(readdlm(ARGS[1], ',', Int, '\n')), inputs)
+
+    # Here is an example chain that slowly but correctly computes 43210 from example 1:
+    # julia.exe .\aoc-2019-07.jl .\example1.txt 4 0 | julia.exe .\aoc-2019-07.jl .\example1.txt 3 | julia.exe .\aoc-2019-07.jl .\example1.txt 2 | julia.exe .\aoc-2019-07.jl .\example1.txt 1 | julia.exe .\aoc-2019-07.jl .\example1.txt 0
+    # Interestingly, this runs much faster in CMD.exe than PowerShell (~3 seconds vs >6 seconds on my machine).
+    #
+    # The below command will execute the entire pipeline, circuiting everything back over TCP with the netcat command,
+    # and log the results to a file named 98765.txt. 
+    # ncat -l -o 98765.txt localhost 60001 | julia aoc-2019-07.jl example4.txt 9 0 | julia aoc-2019-07.jl example4.txt 8 | julia aoc-2019-07.jl example4.txt 7 | julia aoc-2019-07.jl example4.txt 6 | julia aoc-2019-07.jl example4.txt 5 | ncat localhost 60001
+    #
+    # So what I have done is I wrote a Julia program to take advantage of the permutations() function.
+    # The Julia program "make_commands.jl" generates a CMD script that will run every amplifier combination.
+    # I saved these commands as "commands.cmd", which writes text files to the "results/" directory.
+    # Glob all of these up and find the result with the following PowerShell command:
+    # gc results/* | % { [int]$_; } | sort
 end
 
-print("Day 7 Part 1:    ");
-println(bruteForce(vec(readdlm("input.txt", ',', Int, '\n'))))
+# Whew, that one was hard! Concurrency is always a challenging topic.
