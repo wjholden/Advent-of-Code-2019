@@ -5,7 +5,11 @@ l = length(in) ÷ w ÷ h
 layers = reshape(in, (w, h, l))
 
 function count_integers(a, c)
-    map(layer -> length(filter(x -> x == c, a[:,:,layer])), 1:size(a)[3])
+    # Alternatively, use list comprehension, as shown in https://github.com/kiranshila/AoC2019/blob/master/8.jl,
+    # as [f(x) for x in list] is basically equivalent to map(x -> f(x), list).
+    # Also, length(filter()) == count().
+    # return [count(x -> x == 0, a[:,:,i]) for i in 1:100]
+    return map(layer -> length(filter(x -> x == c, a[:,:,layer])), 1:size(a)[3])
 end
 
 zero_counts = count_integers(layers, 0)
