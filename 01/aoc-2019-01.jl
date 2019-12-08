@@ -1,6 +1,6 @@
 using DelimitedFiles
 
-input = readdlm("input.txt", ' ', Int, '\n');
+input = readdlm(ARGS[1], ' ', Int, '\n');
 
 # Part 1
 fuel_required(mass) = (mass ÷ 3) - 2;

@@ -106,22 +106,6 @@ function run(code)
     return code
 end
 
-const day2_tests = ["1,9,10,3,2,3,11,0,99,30,40,50", "1,0,0,0,99", "2,3,0,3,99", "2,4,4,5,99,0", "1,1,1,4,99,5,6,0,99"];
-#run(parse.(Int,split(tests[5],",")), 1, 1)
-
-day2 = vec(readdlm("../02/input.txt", ',', Int, '\n'));
-day2_part1 = run(day2, 12, 2)[1]
-println("Day 2 Part 1: $(day2_part1) ($(day2_part1 == 3409710 ? "passed" : "failed"))");
-
-for noun in 0:100
-    for verb in 0:100
-        if run(day2, noun, verb)[1] == 19690720
-            println("Day 2 Part 2: $(100 * noun + verb) at noun=$noun verb=$verb (expected 7912)");
-            return 100 * noun + verb;
-        end
-    end
-end
-
 const day5_test = ["1002,4,3,4,33"];
 const day5_test_result = run(parse.(Int,split(day5_test[1],",")));
 println("Day 5 Test: $(day5_test_result) ($(day5_test_result == [1002, 4, 3, 4, 99] ? "passed" : "failed"))");
@@ -130,7 +114,7 @@ inputs = [1];
 input = readdlm(ARGS[1], ',', Int, '\n');
 input = vec(input)
 const day5_part1 = run(input);
-println("Day 5 Part 1: $(pop!(outputs)) (expected 7692125)");
+println("Day 5 Part 1: $(pop!(outputs))");
 
 const day5_part2_tests = ["3,9,8,9,10,9,4,9,99,-1,8", "3,9,7,9,10,9,4,9,99,-1,8",
     "3,3,1108,-1,8,3,4,3,99", "3,3,1107,-1,8,3,4,3,99"]
@@ -164,4 +148,4 @@ inputs = [5];
 input = readdlm(ARGS[1], ',', Int, '\n');
 input = vec(input)
 run(input)
-println("Day 5 Part 2: $(pop!(outputs)) (expected 14340395)")
+println("Day 5 Part 2: $(pop!(outputs))")

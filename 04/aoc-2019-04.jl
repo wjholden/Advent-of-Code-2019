@@ -7,8 +7,8 @@ function splitInt(i::Int)
     return a
 end
 
-lower = 271973
-upper = 785961
+lower = parse(Int, ARGS[1])
+upper = parse(Int, ARGS[2])
 
 # Rule 1: must contain at least one consecutive bit string
 containsConsecutive(a) = (a[1] == a[2]) || (a[2] == a[3]) ||
