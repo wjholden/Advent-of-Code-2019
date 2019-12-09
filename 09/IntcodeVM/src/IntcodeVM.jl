@@ -22,6 +22,8 @@ function intcode_parameter(vm::VM, i::Int, setter::Bool=false)
     mode = (vm.code[vm.inst_ptr] ÷ (10^(1+i))) % 10;
 
     if setter
+        # From https://adventofcode.com/2019/day/5:
+        # Parameters that an instruction writes to will never be in immediate mode.
         if mode == 1
             throw(Exception("Unexpected immediate mode setter"))
         end
@@ -50,8 +52,6 @@ end
 
 function intcode3op(vm::VM, f::Function)
     (left, right) = intcode_parameters(vm, 1:2)
-    # Parameters that an instruction writes to will never be in immediate mode.
-    #dst = vm.code[vm.inst_ptr + 3] + 1
     dst = intcode_parameter(vm, 3, true)
     intcode_write(vm, dst, f(left, right))
     return nextInstruction(vm);
@@ -67,7 +67,7 @@ end
 
 function intcodeInput(vm::VM)
     dst = intcode_parameter(vm, 1, true);
-    # If the "inputs" array contains something, take it. Otherwise we can read from stdin.
+    # If the "inputs" array contains something, take it. Otherwise, read real IO.
     if isempty(vm.inputs)
         intcode_write(vm, dst, parse(Int, readline(vm.input)))
     else
