@@ -71,7 +71,12 @@ for test in day9_examples
 end
 
 #=
-109,1,
-204,-1,
-1001,100,1,100,1008,100,16,101,1006,101,0,99
+--------------------;
+109,1,              ; increase relative offset by 1
+204,-1,             ; output vm[-1] using the relative offset
+1001,100,1,100,     ; increment vm[100] by 1
+1008,100,16,101,    ; write result of (vm[100] == 16) to vm[101]
+1006,101,0,         ; if vm[101] == 0 goto 0
+99                  ; exit
+--------------------;
 =#

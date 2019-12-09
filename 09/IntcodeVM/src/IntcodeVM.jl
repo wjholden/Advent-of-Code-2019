@@ -119,7 +119,7 @@ function intcode_dump_instruction(vm::VM)
 end
 
 function intcode_set_relative_base_offset(vm::VM)
-    vm.relative_base = intcode_parameter(vm, 1)
+    vm.relative_base += intcode_parameter(vm, 1)
     return nextInstruction(vm)
 end
 
