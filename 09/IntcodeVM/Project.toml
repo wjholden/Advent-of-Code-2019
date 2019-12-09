@@ -1,0 +1,4 @@
+name = "IntcodeVM"
+uuid = "1da0037c-4b4d-463a-a99f-9451f367493f"
+authors = ["William John Holden <wjholden@gmail.com>"]
+version = "0.1.0"
