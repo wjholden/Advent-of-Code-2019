@@ -1,3 +1,5 @@
+using Combinatorics;
+
 import Pkg;
 Pkg.activate("IntcodeVM/");
 using IntcodeVM;
@@ -23,4 +25,35 @@ for test in day5_part2_tests
     (result,outputs) = IntcodeVM.run(parse.(Int,split(test,",")), inputs=[1],
             in=devnull, out=devnull);
     println("Day 5 Test: $(result) produces outputs $(outputs)")
+end
+
+# Day 7
+
+const day7_examples = ["3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0",
+"3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0",
+"3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0"]
+
+function chainAmplifiers(code, sequence)
+    inputSignal = 0
+    for phaseSetting in sequence
+        c = copy(code)
+        inputSignal = popfirst!(IntcodeVM.run(c, inputs=[phaseSetting, inputSignal], in=devnull, out=devnull)[2])
+    end
+    return inputSignal
+end
+
+function bruteForce(code, phaseSettings::UnitRange{Int})
+    maxSignal = (-1, undef)
+    for order in permutations(phaseSettings)
+        signal = chainAmplifiers(code, order)
+        if (signal > maxSignal[1])
+            maxSignal = (signal, order)
+        end
+    end
+    return maxSignal
+end
+
+for i in 1:length(day7_examples)
+    print("Day 7 Example $(i): ");
+    println(bruteForce(parse.(Int,split(day7_examples[i],",")), 0:4))
 end
