@@ -17,17 +17,25 @@ function intcode_check_bounds(vm::VM, i::Int)
     end
 end
 
-function intcode_parameter(vm::VM, i::Int)
+function intcode_parameter(vm::VM, i::Int, setter::Bool=false)
     parameter = vm.code[vm.inst_ptr + i];
     mode = (vm.code[vm.inst_ptr] ÷ (10^(1+i))) % 10;
-    if mode == 1            # immediate
-        return parameter;
-    elseif mode == 0        # position
-        intcode_check_bounds(vm, parameter + 1)
-        return vm.code[parameter + 1];
-    elseif mode == 2        # relative
-        intcode_check_bounds(vm, parameter + 1 + vm.relative_base)
-        return vm.code[parameter + 1 + vm.relative_base]
+
+    if setter
+        if mode == 1
+            throw(Exception("Unexpected immediate mode setter"))
+        end
+        return parameter + 1 + (mode == 2 ? vm.relative_base : 0)
+    else
+        if mode == 0                # position
+            intcode_check_bounds(vm, parameter + 1)
+            return vm.code[parameter + 1];
+        elseif mode == 1            # immediate
+            return parameter;
+        elseif mode == 2            # relative
+            intcode_check_bounds(vm, parameter + 1 + vm.relative_base)
+            return vm.code[parameter + 1 + vm.relative_base]
+        end
     end
 end
 
@@ -43,7 +51,8 @@ end
 function intcode3op(vm::VM, f::Function)
     (left, right) = intcode_parameters(vm, 1:2)
     # Parameters that an instruction writes to will never be in immediate mode.
-    dst = vm.code[vm.inst_ptr + 3] + 1
+    #dst = vm.code[vm.inst_ptr + 3] + 1
+    dst = intcode_parameter(vm, 3, true)
     intcode_write(vm, dst, f(left, right))
     return nextInstruction(vm);
 end
@@ -57,7 +66,7 @@ function intcodeMultiply(vm::VM)
 end
 
 function intcodeInput(vm::VM)
-    dst = vm.code[vm.inst_ptr + 1] + 1
+    dst = intcode_parameter(vm, 1, true);
     # If the "inputs" array contains something, take it. Otherwise we can read from stdin.
     if isempty(vm.inputs)
         intcode_write(vm, dst, parse(Int, readline(vm.input)))
@@ -93,7 +102,7 @@ end
 
 function intcodeCompare(vm::VM, compare::Function)
     (left, right) = intcode_parameters(vm, 1:2)
-    dst = vm.code[vm.inst_ptr + 3] + 1
+    dst = intcode_parameter(vm, 3, true);
     intcode_write(vm, dst, Int(compare(left, right)))
     return nextInstruction(vm)
 end
@@ -115,7 +124,7 @@ function nextInstruction(vm::VM)
 end
 
 function intcode_dump_instruction(vm::VM)
-    println(stderr, view(vm.code, vm.inst_ptr:(vm.instr_ptr + intcode[vm.code[inst_ptr] % 100])))
+    println(stderr, view(vm.code, vm.inst_ptr:(vm.inst_ptr + (intcode[vm.code[vm.inst_ptr] % 100].n) - 1)))
 end
 
 function intcode_set_relative_base_offset(vm::VM)
@@ -141,11 +150,11 @@ const intcode = Dict([
     (99, Instruction(intcodeExit, 1))
 ]);
 
-
 function run(code::Array{Int,1}; inputs::Array{Int,1}=Array{Int,1}(undef,0), in::IO=devnull, out::IO=devnull)
     vm = VM(copy(code), inputs, Array{Int,1}(undef,0), 1, in, out, 0)
     while (inst::Int = vm.code[vm.inst_ptr]) != 99
         opcode = inst % 100;
+        #intcode_dump_instruction(vm);
         vm.inst_ptr = intcode[opcode].f(vm);
     end
     return (vm.code,vm.outputs)
