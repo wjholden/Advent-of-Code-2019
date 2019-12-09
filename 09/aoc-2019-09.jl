@@ -6,9 +6,9 @@ using IntcodeVM;
 
 # Let's go back to day 2 part 1 for some tests.
 
-const tests = ["1,9,10,3,2,3,11,0,99,30,40,50", "1,0,0,0,99", "2,3,0,3,99", "2,4,4,5,99,0", "1,1,1,4,99,5,6,0,99"];
+const day2_tests = ["1,9,10,3,2,3,11,0,99,30,40,50", "1,0,0,0,99", "2,3,0,3,99", "2,4,4,5,99,0", "1,1,1,4,99,5,6,0,99"];
 
-for test in tests
+for test in day2_tests
     println(IntcodeVM.run(parse.(Int,split(test,",")))[1]);
 end
 
@@ -57,3 +57,21 @@ for i in 1:length(day7_examples)
     print("Day 7 Example $(i): ");
     println(bruteForce(parse.(Int,split(day7_examples[i],",")), 0:4))
 end
+
+
+# Day 9!
+
+const day9_examples = ["109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99",
+"1102,34915192,34915192,7,4,7,99,0",
+"104,1125899906842624,99"];
+
+for test in day9_examples
+    print("Day 9 Test: ");
+    println(IntcodeVM.run(parse.(Int,split(test,",")))[2]);
+end
+
+#=
+109,1,
+204,-1,
+1001,100,1,100,1008,100,16,101,1006,101,0,99
+=#
