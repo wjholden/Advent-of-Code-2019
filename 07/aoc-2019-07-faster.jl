@@ -1,5 +1,3 @@
-import Pkg;
-Pkg.activate("../09/IntcodeVM/");
 using IntcodeVM;
 using DelimitedFiles;
 using Combinatorics;
