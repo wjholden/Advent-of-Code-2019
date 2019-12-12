@@ -1,11 +1,8 @@
-regex = r"<x=(-?\d+), y=(-?\d+), z=(-?\d+)>";
-input = readlines(length(ARGS) > 0 ? ARGS[1] : "example1.txt");
+const regex = r"<x=(-?\d+), y=(-?\d+), z=(-?\d+)>";
+const input = readlines(length(ARGS) > 0 ? ARGS[1] : "example1.txt");
 pos = hcat(map(line -> parse.(Int,match(regex, line).captures), input)...);
-#=
-p (positions) is a 3x4 matrix where each *row* is an x, y, or z dimension.
-=#
+const start = copy(pos)
 
-# total gravitational effect on body i in dimension d.
 function gravity(p,i,d)
     dv = 0
     for j in p[d,:]
@@ -25,9 +22,11 @@ function energy(positions, velocities, moon)
 end
 
 vel = zeros(Int,3,4);
+const period_length = zeros(Int,3)
 
-show_output = false
-for i in 1:1000
+const show_output = false
+
+for i in 1:500000
     dv = [gravity(pos,body,dimension) for dimension in 1:3, body in 1:size(pos)[2]]
     global vel += dv
     global pos += vel
@@ -39,15 +38,21 @@ for i in 1:1000
         println("Velocities:")
         display(vel')
         println()
-        println()
+    end
+
+    for j in 1:3
+        if period_length[j] == 0 && pos[j,:] == start[j,:]
+            period_length[j] = i + 1
+        end
+    end
+
+    if i == 1000
+        println("Day 12 Part 1: $(sum([energy(pos,vel,i)[3] for i in 1:4]))")
+    end
+    
+    if i > 1000 && !(0 in period_length)
+        break;
     end
 end
 
-if show_output
-    for i in 1:4
-        println(energy(pos, vel, i))
-    end
-end
-
-println("Day 12 Part 1: $(sum([energy(pos,vel,i)[3] for i in 1:4]))")
-
+println("Day 12 Part 2: $(foldl(lcm, period_length))")
