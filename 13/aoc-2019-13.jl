@@ -28,7 +28,6 @@ elseif length(ARGS) >= 3 && ARGS[3] == "synchronous"
 end
 
 function read_screen(s)
-    println("reading...")
     values_read = []
 
     # This construct is not safe for part 2.
@@ -48,7 +47,6 @@ function read_screen(s)
 end
 
 function parse_screen(values_read)
-    println("parsing...")
     for i in 1:3:length(values_read)
         x = values_read[i]
         y = values_read[i+1]
@@ -96,16 +94,6 @@ score = 0
     close(vm_socket)
 end
 
-println("connect on port $(port + 1)")
-#readline()
-#exit()
-
-client_socket_2 = connect(port + 1)
-parse_screen(read_screen(client_socket_2))
-
-while true
-    println("Score: $(score)")
-    i = readline()
-    println(client_socket_2, parse(Int,i))
-    parse_screen(read_screen(client_socket_2))
-end
+println("Connect on port $(port + 1) using the Java GUI app for part 2.")
+readline()
+exit()
