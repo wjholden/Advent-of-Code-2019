@@ -69,7 +69,8 @@ function intcodeInput(vm::VM)
     dst = intcode_parameter(vm, 1, true);
     # If the "inputs" array contains something, take it. Otherwise, read real IO.
     if isempty(vm.inputs)
-        intcode_write(vm, dst, parse(Int, readline(vm.input)))
+        value_read = parse(Int, readline(vm.input))
+        intcode_write(vm, dst, value_read)
     else
         intcode_write(vm, dst, popfirst!(vm.inputs))
     end
