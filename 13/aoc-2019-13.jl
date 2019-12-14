@@ -32,7 +32,10 @@ function read_screen(s)
 
     # This construct is not safe for part 2.
     # For readline() to return "" the socket needs to be closed or an explicit CTRL+Z
-    # needs to be sent. This works in part 1, but it is true for part 2.
+    # needs to be sent. This works in part 1 because the machine halts with only 1 coin.
+    # For part 2, we need to accept inputs pixel by pixel.
+    # Furthermore, the game does not repaint the entire screen for each tick. It only
+    # sends the pixels that changed.
 
     while (value = readline(s)) != ""
         if length(value) > 0
@@ -84,16 +87,23 @@ close(client_socket)
 ### Now for part 2.
 score = 0
 
+vm_listener = listen(port + 1)
+
 @async begin
-    vm_listener = listen(port + 1)
-    vm_socket = accept(vm_listener)
-    code[1] = 2
-    println("accepted")
-    IntcodeVM.run(code, in=vm_socket, out=vm_socket)
-    close(vm_listener)
-    close(vm_socket)
+    while true
+        vm_socket = accept(vm_listener)
+        @async begin
+            s = vm_socket
+            code[1] = 2
+            println("accepted connection on $(vm_socket)")
+            IntcodeVM.run(code, in=s, out=s)
+            close(s)
+        end
+    end
 end
 
 println("Connect on port $(port + 1) using the Java GUI app for part 2.")
+println("Press any key to exit...")
 readline()
 exit()
+close(vm_listener)

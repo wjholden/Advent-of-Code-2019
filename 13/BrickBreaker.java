@@ -8,57 +8,134 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.*;
+import java.io.*;
+import java.awt.*;
 
 public class BrickBreaker extends JFrame implements KeyListener {
 
-    private static final int TIMER_DELAY_MILLISECONDS = 1000;
+    private static final int PORT = 60001;
     private final JLabel score = new JLabel("0");
     private int joystick = 0;
-    private final String symbols[] = new String[] { " ", "■", "□", "_", "∘"};
-    private final Socket socket;
+    private final String symbols[] = new String[] { " ", "#", "*", "_", "o"};
     private final JTextArea textArea = new JTextArea(20, 42);
-    private final int values[][] = new int[42][20];
-    private final javax.swing.Timer timer;
+    private final String values[][] = new String[42][20];
+    private AtomicBoolean needsRepaint = new AtomicBoolean();
+    private final Timer timer = new Timer(500, this::updateScreen);
+    private final Socket socket;
+    private final BufferedReader reader;
+    private final PrintWriter writer;
+    private final boolean DEBUG = false;
+    private final JButton[] buttons = new JButton[3];
 
-    public BrickBreaker(Socket socket) {
+    public BrickBreaker() throws IOException {
+        // set up the networking pieces first
+        socket = new Socket("localhost", PORT);
+        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        writer = new PrintWriter(socket.getOutputStream(), true);
+        
+        // now build your GUI
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(score);
         textArea.setEditable(false);
+        textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
         panel.add(textArea);
+        
+        // direction buttons
+        JPanel subpanel = new JPanel(new FlowLayout());
+        for (int i = 0 ; i < 3 ; i++) {
+            buttons[i] = new JButton(Integer.toString(i - 1));
+            buttons[i].addActionListener(this::send);
+            subpanel.add(buttons[i]);
+        }
+        panel.add(subpanel);
+        panel.add(new JLabel("")); // Having some trouble with Java not giving enough space.
+        panel.add(new JLabel("")); // Don't feel like actually fixing it.
         add(panel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pack();
-        setVisible(true);
-        setTitle("Advent of Code 2019 Day 13 Intcode Brick Breaker");
-        timer = new javax.swing.Timer(TIMER_DELAY_MILLISECONDS, this::updateScreen);
+
+        // finally, start the receiver and repainter threads.
+        new Thread(this::receive).start();
+        timer.setRepeats(true);
         timer.start();
-        this.socket = socket;
+    }
+
+    private void send(ActionEvent e) {
+        if (DEBUG) System.out.println("Transmit: " + ((JButton)e.getSource()).getText());
+        writer.println(((JButton)e.getSource()).getText());
+    }
+
+    private void receive() {
+        System.out.println(socket);
+        System.out.println(reader);
+
+        try {
+            while (!socket.isClosed()) {
+                int x, y, v;
+                try {
+                    x = Integer.valueOf(reader.readLine());
+                    y = Integer.valueOf(reader.readLine());
+                    v = Integer.valueOf(reader.readLine());
+                } catch (IOException ex) {
+                    System.err.println("Unable to read from socket: " + ex);
+                    return;
+                }
+
+                if (x == -1 && y == 0) {
+                    score.setText(Integer.toString(v));
+                } else {
+                    synchronized (values) {
+                        values[x][y] = symbols[v];
+                    }
+                }
+
+                if (DEBUG) System.out.println(Arrays.toString(new int[] { x, y, v }));
+                needsRepaint.set(true);
+            }
+        } catch (NumberFormatException ex) {
+            timer.stop();
+            textArea.setText("Game over");
+            for (JButton b : buttons) {
+                b.setEnabled(false);
+            }
+            System.out.println("Game over. Score = " + score.getText());
+        } finally {
+            try {
+                writer.close();
+                reader.close();
+                socket.close();
+            } catch (IOException ex) {
+                System.err.println("This is really annoying. " + ex);
+            }
+        }
     }
 
     private void updateScreen(ActionEvent e) {
-        Scanner sc = new Scanner(socket);
-        i = 0;
-        while (sc.hasNextInt()) {
-            int x = sc.nextInt();
-            int y = sc.nextInt();
-            int v = sc.nextInt();
-            if (x == -1 && y == 0) {
-                score = v;
-            } else {
-                values[x][y] = v;
+        if (needsRepaint.get() == true) {
+            StringBuilder sb = new StringBuilder();
+            synchronized(values) {
+                for (int y = 0 ; y < 20 ; y++) {
+                    for (int x = 0 ; x < 42 ; x++) {
+                        sb.append(values[x][y]);
+                    }
+                    if (y < 19) sb.append("\n");
+                }
             }
+            textArea.setText(sb.toString());
+            if (DEBUG) System.out.println(sb);
+            needsRepaint.set(false);
         }
-        
     }
 
     public static void main (String args[]) {
@@ -66,17 +143,20 @@ public class BrickBreaker extends JFrame implements KeyListener {
     }
 
     private static void createAndShowGui() {
-        BrickBreaker frame;
-        try (Socket socket = new Socket("localhost", 60000)) {
-            frame = new BrickBreaker(socket);
-            frame.addKeyListener(frame);
+        try {
+            final BrickBreaker frame = new BrickBreaker();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            frame.setVisible(true);
+            frame.setTitle("Advent of Code 2019 Day 13 Intcode Brick Breaker");
         } catch (IOException ex) {
             System.err.println(ex);
+            System.exit(1);
         }
-        System.out.println("done");
     }
 
     public void keyPressed(KeyEvent e) {
+        System.out.println("hi");
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
                 this.joystick = -1;
@@ -99,4 +179,5 @@ public class BrickBreaker extends JFrame implements KeyListener {
     
         System.out.println(e.getKeyCode());
     }
+
 }
