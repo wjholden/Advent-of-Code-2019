@@ -91,6 +91,7 @@ vm_listener = listen(port + 1)
 
 @async begin
     while true
+        # Is this a busy loop? My fans are kind of loud...
         vm_socket = accept(vm_listener)
         @async begin
             s = vm_socket
