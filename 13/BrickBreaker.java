@@ -28,7 +28,7 @@ public class BrickBreaker extends JFrame implements KeyListener {
     private static final int PORT = 60001;
     private final JLabel score = new JLabel("0");
     private int joystick = 0;
-    private final String symbols[] = new String[] { " ", "#", "*", "_", "o"};
+    private final String symbols[] = new String[] { " ", "#", "*", "=", "o"};
     private final JTextArea textArea = new JTextArea(20, 42);
     private final String values[][] = new String[42][20];
     private AtomicBoolean needsRepaint = new AtomicBoolean();
