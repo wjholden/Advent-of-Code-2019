@@ -1,5 +1,8 @@
 module IntcodeVM
 
+using Sockets
+using DelimitedFiles
+
 mutable struct VM
     code::Array{Int,1}
     inputs::Array{Int,1}
@@ -177,6 +180,22 @@ function run(code::Array{Int,1}; inputs::Array{Int,1}=Array{Int,1}(undef,0), in:
     return (vm.code,vm.outputs)
 end
 
-export run
+function run_async(filename::String, port::Int=60000)
+    code = vec(readdlm(filename, ',', Int, '\n'))
+    @async begin
+        vm_listener = listen(port)
+        vm_socket = accept(vm_listener)
+        IntcodeVM.run(code, in=vm_socket, out=vm_socket)
+        close(vm_listener)
+        close(vm_socket)
+    end
+end
+
+function run_sync(filename::String)
+    code = vec(readdlm(filename, ',', Int, '\n'))
+    return IntcodeVM.run(code, in=stdin, out=stdout)
+end
+
+export run, run_async, run_sync
 
 end # module

@@ -20,4 +20,4 @@ These are the daily themes that I consider the salient lessons from each day.
 12. Attractors, number theory, large problems
 13. Games, reverse engineering
 14. 
-15. 
+15. DFS

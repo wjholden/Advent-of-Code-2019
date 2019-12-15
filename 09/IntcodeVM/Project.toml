@@ -2,3 +2,7 @@ name = "IntcodeVM"
 uuid = "1da0037c-4b4d-463a-a99f-9451f367493f"
 authors = ["William John Holden <wjholden@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
