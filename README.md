@@ -1,5 +1,5 @@
 # Advent of Code 2019
-This year: #JuliaLang!
+This is my third year participating in Advent of Code. I look forward to this all year. Last year I tried [Mathematica](https://wjholden.com/aoc/2018/) and it was a great experience. This year: [Julia](https://julialang.org/)!
 
 # Themes
 1. Loops, functions, and recursion
