@@ -25,14 +25,15 @@ import java.awt.*;
 
 public class BrickBreaker extends JFrame implements KeyListener {
 
+    private static final int TIME = 1000 / 60;
     private static final int PORT = 60001;
     private final JLabel score = new JLabel("0");
     private int joystick = 0;
-    private final String symbols[] = new String[] { " ", "#", "*", "=", "o"};
+    private final String symbols[] = new String[] { " ", "#", "*", "=", "O"};
     private final JTextArea textArea = new JTextArea(20, 42);
     private final String values[][] = new String[42][20];
     private AtomicBoolean needsRepaint = new AtomicBoolean();
-    private final Timer timer = new Timer(1000 / 60, this::updateScreen);
+    private final Timer timer = new Timer(TIME, this::updateScreen);
     private final Timer autosend;
     private final Socket socket;
     private final BufferedReader reader;
@@ -79,7 +80,7 @@ public class BrickBreaker extends JFrame implements KeyListener {
         timer.setRepeats(true);
         timer.start();
 
-        autosend = new Timer(1000 / 60, evt -> writer.println("0"));
+        autosend = new Timer(TIME, evt -> writer.println("0"));
         autosend.setRepeats(true);
     }
 
