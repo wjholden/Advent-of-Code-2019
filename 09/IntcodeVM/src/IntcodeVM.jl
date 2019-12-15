@@ -151,11 +151,27 @@ const intcode = Dict([
     (99, Instruction(intcodeExit, 1))
 ]);
 
-function run(code::Array{Int,1}; inputs::Array{Int,1}=Array{Int,1}(undef,0), in::IO=devnull, out::IO=devnull)
+function compareMemory(ref::Array{Int,1}, diff::Array{Int,1})
+    if length(ref) != length(diff)
+        println("Length of memory has changed from $(length(ref)) to $(length(diff))")
+    end
+    for i in 1:length(diff)
+        if get(ref,i,0) != diff[i]
+            println("vm[$(i-1)] $(get(ref,i,0)) -> $(diff[i])")
+        end
+    end
+end
+
+function run(code::Array{Int,1}; inputs::Array{Int,1}=Array{Int,1}(undef,0), in::IO=devnull, out::IO=devnull, dump_instruction::Bool=false, dump_code::Bool=false)
     vm = VM(copy(code), inputs, Array{Int,1}(undef,0), 1, in, out, 0)
+    ref = copy(code)
     while (inst::Int = vm.code[vm.inst_ptr]) != 99
         opcode = inst % 100;
-        #intcode_dump_instruction(vm);
+        if dump_code
+            println(compareMemory(ref, vm.code))
+            ref = copy(vm.code)
+        end
+        if dump_instruction intcode_dump_instruction(vm) end
         vm.inst_ptr = intcode[opcode].f(vm);
     end
     return (vm.code,vm.outputs)

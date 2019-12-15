@@ -32,7 +32,8 @@ public class BrickBreaker extends JFrame implements KeyListener {
     private final JTextArea textArea = new JTextArea(20, 42);
     private final String values[][] = new String[42][20];
     private AtomicBoolean needsRepaint = new AtomicBoolean();
-    private final Timer timer = new Timer(500, this::updateScreen);
+    private final Timer timer = new Timer(1000 / 60, this::updateScreen);
+    private final Timer autosend;
     private final Socket socket;
     private final BufferedReader reader;
     private final PrintWriter writer;
@@ -60,6 +61,14 @@ public class BrickBreaker extends JFrame implements KeyListener {
             buttons[i].addActionListener(this::send);
             subpanel.add(buttons[i]);
         }
+        JButton goButton = new JButton("Go");
+        goButton.addActionListener(this::autoSend);
+        subpanel.add(goButton);
+
+        JButton stopButton = new JButton("Stop");
+        stopButton.addActionListener(this::stopAutoSend);
+        subpanel.add(stopButton);
+
         panel.add(subpanel);
         panel.add(new JLabel("")); // Having some trouble with Java not giving enough space.
         panel.add(new JLabel("")); // Don't feel like actually fixing it.
@@ -69,11 +78,24 @@ public class BrickBreaker extends JFrame implements KeyListener {
         new Thread(this::receive).start();
         timer.setRepeats(true);
         timer.start();
+
+        autosend = new Timer(1000 / 60, evt -> writer.println("0"));
+        autosend.setRepeats(true);
     }
 
     private void send(ActionEvent e) {
         if (DEBUG) System.out.println("Transmit: " + ((JButton)e.getSource()).getText());
         writer.println(((JButton)e.getSource()).getText());
+    }
+
+    private void autoSend(ActionEvent e) {
+        // Using the "input3.txt" with the floor, we can now send a zero periodically
+        // to automatically bounce the ball around.
+        autosend.start();
+    }
+
+    private void stopAutoSend(ActionEvent e) {
+        autosend.stop();
     }
 
     private void receive() {
