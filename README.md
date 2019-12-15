@@ -1,7 +1,11 @@
 # Advent of Code 2019
-This is my third year participating in Advent of Code. I look forward to this all year. Last year I tried [Mathematica](https://wjholden.com/aoc/2018/) and it was a great experience. This year: [Julia](https://julialang.org/)!
+This is my third year participating in [Advent of Code](https://adventofcode.com/2019). I look forward to this all year. Last year I tried [Mathematica](https://wjholden.com/aoc/2018/) and it was a great experience. This year: [Julia](https://julialang.org/)!
 
-# Themes
+Advent of Code is a wonderful way for experienced programmers to practice a new language. The challenges get extremely difficult. The complexity and variety of the challenges will stress test any programming language, showing you where the language (and the programmer) are weak and strong.
+
+These are the daily themes that I consider the salient lessons from each day.
+
+# Daily Themes
 1. Loops, functions, and recursion
 2. Assembly language basics
 3. Procedural programming, Cartesian space, complex arithmetic
