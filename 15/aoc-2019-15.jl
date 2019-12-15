@@ -1,4 +1,4 @@
-using IntcodeVM, Sockets
+using IntcodeVM, Sockets, LightGraphs
 
 const port = 60015
 IntcodeVM.run_async("input.txt", port)
@@ -86,3 +86,17 @@ close(socket)
 # I am tempted to try to solve this with Floyd-Warshall, but with about 800
 # non-wall tiles I think this approach might not be feasible.
 
+v = sort(collect(keys(filter(x -> last(x) < Inf, distances))))
+G = Graph(length(v))
+for i=1:length(v)
+    for j=1:4
+        if v[i] + directions[j] in v
+            add_edge!(G, i, findfirst(x -> x == v[i] + directions[j], v))
+        end
+    end
+end
+
+o2 = findfirst(x -> x == oxygen_location, v)
+print("Day 15 Part 2: ")
+print(findmax(floyd_warshall_shortest_paths(G).dists[o2,:])[1])
+println(" (using Floyd-Warshall!)")
