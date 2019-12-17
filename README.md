@@ -21,3 +21,5 @@ These are the daily themes that I consider the salient lessons from each day.
 13. Games, reverse engineering
 14. 
 15. DFS
+16. 
+17. 

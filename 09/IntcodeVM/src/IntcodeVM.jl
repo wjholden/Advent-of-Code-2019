@@ -1,5 +1,8 @@
 module IntcodeVM
 
+# See https://www.reddit.com/r/adventofcode/comments/ebp057/what_does_everyones_intcode_interface_look_like/fb7awoy/
+# for a description of this program's usage.
+
 using Sockets
 using DelimitedFiles
 
@@ -186,8 +189,8 @@ function run_async(filename::String, port::Int=60000)
         vm_listener = listen(port)
         vm_socket = accept(vm_listener)
         IntcodeVM.run(code, in=vm_socket, out=vm_socket)
-        close(vm_listener)
         close(vm_socket)
+        close(vm_listener)
     end
 end
 

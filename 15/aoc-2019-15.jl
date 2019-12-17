@@ -100,3 +100,9 @@ o2 = findfirst(x -> x == oxygen_location, v)
 print("Day 15 Part 2: ")
 print(findmax(floyd_warshall_shortest_paths(G).dists[o2,:])[1])
 println(" (using Floyd-Warshall!)")
+
+# In retrospect, this was super overkill. When I started thinking about part 2
+# I incorrectly assumed we needed the longest of all optimal paths in the network
+# and somehow got mentally stuck on All-Pairs. Really you just need to run any
+# SPF algorithm against the oxygen location. I think someone else figured out
+# an even more clever way to do this but I have not looked at the Reddits.
