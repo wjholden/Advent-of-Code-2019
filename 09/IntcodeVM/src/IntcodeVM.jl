@@ -168,7 +168,7 @@ function compareMemory(ref::Array{Int,1}, diff::Array{Int,1})
     end
 end
 
-function run(code::Array{Int,1}; inputs::Array{Int,1}=Array{Int,1}(undef,0), in::IO=devnull, out::IO=devnull, dump_instruction::Bool=false, dump_code::Bool=false)
+function run(code::Array{Int,1}; inputs::Array{Int,1}=zeros(Int,0), in::IO=devnull, out::IO=devnull, dump_instruction::Bool=false, dump_code::Bool=false)
     vm = VM(copy(code), inputs, Array{Int,1}(undef,0), 1, in, out, 0)
     ref = copy(code)
     while (inst::Int = vm.code[vm.inst_ptr]) != 99
