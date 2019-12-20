@@ -71,17 +71,20 @@ print_beam(tractor_beam)
 # D'oh, something goes wrong at y=216 and y=217! The right bound does not linearly increase between these rows.
 
 function find_square(square_size::Int, search_space::UnitRange{Int})
+    # Ahh, my old friend off-by-one errors.
+    # We have to include the current location x or y in a square of size n.
+    dy = square_size - 1
     for row=search_space
         b1 = get_bounds(row)
-        b2 = get_bounds(row + square_size)
-        println("Bounds(row $(row)) = $(b1), Bounds(row $(row + square_size)) = $(b2)")
-        println(b1[2])
-        println(b2[1] + square_size)
-        if b1[2] == b2[1] + square_size
+        b2 = get_bounds(row + dy)
+        #println("Bounds(row $(row)) = $(b1), Bounds(row $(row + dy)) = $(b2)")
+        #println(b1[2] - b2[1])
+        if b1[2] - b2[1] == dy
             return (b2[1], row)
         end
     end
     return (-1,-1)
 end
 
-find_square(2, 1:20)
+(x,y) = find_square(100, 1:10000)
+println("Day 19 Part 2: $(x * 10000 + y)")
