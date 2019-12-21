@@ -25,3 +25,4 @@ These are the daily themes that I consider the salient lessons from each day.
 17. 
 18. 
 19. Linear programming, dynamic programming for O(n^2) problems
+20. Dijkstra's algorithm
