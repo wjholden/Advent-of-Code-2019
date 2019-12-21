@@ -184,21 +184,23 @@ function run(code::Array{Int,1}; inputs::Array{Int,1}=zeros(Int,0), in::IO=devnu
 end
 
 function run_async(filename::String, port::Int=60000)
-    code = vec(readdlm(filename, ',', Int, '\n'))
     @async begin
         vm_listener = listen(port)
         vm_socket = accept(vm_listener)
-        IntcodeVM.run(code, in=vm_socket, out=vm_socket)
+        IntcodeVM.run(load_intcode(filename), in=vm_socket, out=vm_socket)
         close(vm_socket)
         close(vm_listener)
     end
 end
 
 function run_sync(filename::String)
-    code = vec(readdlm(filename, ',', Int, '\n'))
-    return IntcodeVM.run(code, in=stdin, out=stdout)
+    return IntcodeVM.run(load_intcode(filename), in=stdin, out=stdout)
 end
 
-export run, run_async, run_sync
+function load_intcode(filename::String)
+    code = vec(readdlm(filename, ',', Int, '\n'))
+end
+
+export run, run_async, run_sync, load_intcode
 
 end # module
