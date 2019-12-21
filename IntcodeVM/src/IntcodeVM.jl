@@ -62,7 +62,7 @@ function intcode_write(vm::VM, dst::Int, value::Int)
 end
 
 function intcode_ternary_op(vm::VM, f::Function)
-    (left, right) = intcode_parameters(vm, 1:2)
+    left, right = intcode_parameters(vm, 1:2)
     dst = intcode_parameter(vm, 3, true)
     intcode_write(vm, dst, f(left, right))
     return nextInstruction(vm);
@@ -96,7 +96,7 @@ function intcodeOutput(vm::VM)
 end
 
 function intcodeJump(vm::VM, condition::Function)
-    (left, right) = intcode_parameters(vm, 1:2)
+    left, right = intcode_parameters(vm, 1:2)
     if condition(left)
         return right + 1
     else
@@ -113,7 +113,7 @@ function intcodeJumpIfFalse(vm::VM)
 end
 
 function intcode_comparison(vm::VM, compare::Function)
-    (left, right) = intcode_parameters(vm, 1:2)
+    left, right = intcode_parameters(vm, 1:2)
     dst = intcode_parameter(vm, 3, true);
     intcode_write(vm, dst, Int(compare(left, right)))
     return nextInstruction(vm)
