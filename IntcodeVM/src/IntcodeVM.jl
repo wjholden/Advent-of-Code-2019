@@ -16,6 +16,11 @@ mutable struct VM
     relative_base::Int
 end
 
+struct Instruction
+    f::Function
+    n::Int
+end
+
 function intcode_check_bounds(vm::VM, i::Int)
     if i > length(vm.code)
         z = zeros(i - length(vm.code))
@@ -29,7 +34,7 @@ function intcode_parameter(vm::VM, i::Int, setter::Bool=false)
 
     if setter
         # From https://adventofcode.com/2019/day/5:
-        # Parameters that an instruction writes to will never be in immediate mode.
+        # "Parameters that an instruction writes to will never be in immediate mode."
         if mode == 1
             throw(Exception("Unexpected immediate mode setter"))
         end
@@ -56,7 +61,7 @@ function intcode_write(vm::VM, dst::Int, value::Int)
     vm.code[dst] = value
 end
 
-function intcode3op(vm::VM, f::Function)
+function intcode_ternary_op(vm::VM, f::Function)
     (left, right) = intcode_parameters(vm, 1:2)
     dst = intcode_parameter(vm, 3, true)
     intcode_write(vm, dst, f(left, right))
@@ -64,11 +69,11 @@ function intcode3op(vm::VM, f::Function)
 end
 
 function intcodeAdd(vm::VM)
-    return intcode3op(vm, +)
+    return intcode_ternary_op(vm, +)
 end
 
 function intcodeMultiply(vm::VM)
-    return intcode3op(vm, *)
+    return intcode_ternary_op(vm, *)
 end
 
 function intcodeInput(vm::VM)
@@ -107,7 +112,7 @@ function intcodeJumpIfFalse(vm::VM)
     return intcodeJump(vm, x -> x == 0)
 end
 
-function intcodeCompare(vm::VM, compare::Function)
+function intcode_comparison(vm::VM, compare::Function)
     (left, right) = intcode_parameters(vm, 1:2)
     dst = intcode_parameter(vm, 3, true);
     intcode_write(vm, dst, Int(compare(left, right)))
@@ -115,11 +120,11 @@ function intcodeCompare(vm::VM, compare::Function)
 end
 
 function intcodeLessThan(vm::VM)
-    return intcodeCompare(vm, <)
+    return intcode_comparison(vm, <)
 end
 
 function intcodeEquals(vm::VM)
-    return intcodeCompare(vm, ==)
+    return intcode_comparison(vm, ==)
 end
 
 function intcodeExit(vm::VM)
@@ -137,11 +142,6 @@ end
 function intcode_set_relative_base_offset(vm::VM)
     vm.relative_base += intcode_parameter(vm, 1)
     return nextInstruction(vm)
-end
-
-struct Instruction
-    f::Function
-    n::Int
 end
 
 const intcode = Dict([

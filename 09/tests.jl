@@ -1,8 +1,4 @@
-using Combinatorics;
-
-import Pkg;
-Pkg.activate("IntcodeVM/");
-using IntcodeVM;
+using IntcodeVM, Combinatorics
 
 # Let's go back to day 2 part 1 for some tests.
 

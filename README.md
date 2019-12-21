@@ -3,7 +3,7 @@ This is my third year participating in [Advent of Code](https://adventofcode.com
 
 Advent of Code is a wonderful way for experienced programmers to practice a new language. The challenges get extremely difficult. The complexity and variety of the challenges will stress test any programming language, showing you where the language (and the programmer) are weak and strong.
 
-These are the daily themes that I consider the salient lessons from each day.
+Below are my impression of the major theme for each day.
 
 # Daily Themes
 1. Loops, functions, and recursion
@@ -22,8 +22,8 @@ These are the daily themes that I consider the salient lessons from each day.
 14. 
 15. DFS
 16. Signal processing
-17. 
+17. ASCII, scripting (meta-metaprogramming with Intcode!)
 18. 
-19. Linear programming, dynamic programming for O(n^2) problems
+19. Linear programming, dynamic programming, quadratic complexity
 20. Dijkstra's algorithm
 21. 

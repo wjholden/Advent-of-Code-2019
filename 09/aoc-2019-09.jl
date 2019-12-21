@@ -1,5 +1,3 @@
-import Pkg;
-Pkg.activate("IntcodeVM/");
 using IntcodeVM;
 using DelimitedFiles;
 
