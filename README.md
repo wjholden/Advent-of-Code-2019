@@ -27,7 +27,7 @@ Below are my impression of the major theme for each day.
 19. Linear programming, dynamic programming, quadratic complexity
 20. Dijkstra's algorithm
 21. 
-22. Circular arrays
+22. Circular arrays, uhhh....
 23. 
 24. 
 25. 

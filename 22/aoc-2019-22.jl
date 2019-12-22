@@ -54,3 +54,11 @@ println(findfirst(==(2019), shuffled) - 1)
 
 # For part 2 I think it is safe to assume (from previous AoC adventures) that
 # the shuffle attracts, but I have no idea how to get to it.
+# It cannot be a coincidence that both the factory order and the shuffle count are prime.
+# 119315717514047 / 101741582076661 is about 1.1727330662515558
+
+# sum(map(l -> parse(Int,match(r"cut (-?\d+)", l)[1]), filter(l -> match(r"cut", l) != nothing, readlines("input.txt"))))
+# -14903
+
+# sum(map(l -> parse(Int,match(r"deal with increment (-?\d+)", l)[1]), filter(l -> match(r"eal with", l) != nothing, readlines("input.txt"))))
+# 1628
