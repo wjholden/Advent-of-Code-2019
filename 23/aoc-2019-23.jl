@@ -1,28 +1,33 @@
 using IntcodeVM, Sockets, OffsetArrays
 
 const code = IntcodeVM.load_intcode("input.txt")
-
 const queues = OffsetArray([[(i, -1)] for i=0:49], 0:49)
 
 # Spin up 50 instances of the VM.
-for i=0:49
-    IntcodeVM.run_async(code, 60000 + i)
-end
+foreach(i -> IntcodeVM.run_async(code, 60000 + i), 0:49)
 
-# Connect to all 50 on TCP.
+# Connect to all 50 VMs on TCP.
 const sockets = OffsetArray([connect(60000 + i) for i=0:49], 0:49)
 
+# Part 1 asks for the value when we first encounter destination address 255.
 first_255_seen = false
+
+# The current (x,y) values sent to 255. This value can be overwritten.
 nat = (missing, missing)
 
+# The most recent NAT value sent to address 0 when the network was idle.
+last_nat = undef
+
 # Switch values read from a VM to the appropriate destination.
-# There is no real guarantee that this occurs atomically...
+# These writes are not atomic. I could envision a race condition where
+# the main loop sends a packet to a VM, then moves to the next queue
+# and sends another packet to a different VM, and the second response
+# makes it to the switching thread first. In practice, however,
+# this function is good enough to reliably get the correct answer.
 function switch(socket::IO)
     @async begin
         while isopen(socket)
             (dst, x, y) = [parse(Int, readline(socket)) for i=1:3]
-            #print("[RX] ")
-            #println((dst, x, y))
             if dst != 255
                 push!(queues[dst], (x,y))
             elseif !first_255_seen && dst == 255
@@ -36,23 +41,21 @@ function switch(socket::IO)
     end
 end
 
-# Start the switching thread.
+# Start the switching threads.
 foreach(switch, sockets)
 
-# Assign addresses
-foreach(i -> println(sockets[i], "$(i)"), 0:49)
+# Assign addresses to each VM.
+foreach(i -> println(sockets[i], i), 0:49)
 
-last_nat = undef
-
-# Looks like this problem does not require true concurrency.
+# Iterate across all queues repeatedly.
+# Terminate the outer loop when we find the part 2 answer.
 for i=0:1000
     idle = true
 
+    # Iterate over each queue, sending (x,y) "packets" if present and -1 otherwise.
     for j=0:49
         if !isempty(queues[j])
             (x,y) = popfirst!(queues[j])
-            #print("[TX $(j)] ")
-            #println((x,y))
             println(sockets[j], x)
             println(sockets[j], y)
             idle = false
@@ -61,14 +64,16 @@ for i=0:1000
         end
     end
 
+    # The network is considered "idle" when all queues are empty.
     if idle
-        #println("Network is idle, NAT=$(nat)")
         if nat == last_nat
             println("Day 23 Part 2: $(nat[2])")
-            exit()
+            break
         else
             push!(queues[0], nat)
             global last_nat = nat
         end
     end
 end
+
+foreach(close, sockets)
