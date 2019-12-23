@@ -105,11 +105,11 @@ function intcodeJump(vm::VM, condition::Function)
 end
 
 function intcodeJumpIfTrue(vm::VM)
-    return intcodeJump(vm, x -> x != 0)
+    return intcodeJump(vm, !=(0))
 end
 
 function intcodeJumpIfFalse(vm::VM)
-    return intcodeJump(vm, x -> x == 0)
+    return intcodeJump(vm, ==(0))
 end
 
 function intcode_comparison(vm::VM, compare::Function)
@@ -128,7 +128,7 @@ function intcodeEquals(vm::VM)
 end
 
 function intcodeExit(vm::VM)
-    throw(Exception("The main loop should never have sent us to the exit function."))
+    error("The main loop should never have sent us to the exit function.")
 end
 
 function nextInstruction(vm::VM)
