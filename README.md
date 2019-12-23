@@ -28,7 +28,7 @@ Below are my impression of the major theme for each day.
 20. Dijkstra's algorithm
 21. 
 22. Circular arrays, uhhh....
-23. 
+23. Networking, concurrency
 24. 
 25. 
 
