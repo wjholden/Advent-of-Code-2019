@@ -97,6 +97,8 @@ end
 
 function intcodeJump(vm::VM, condition::Function)
     left, right = intcode_parameters(vm, 1:2)
+    # Why does VSCode dislike this statement?
+    # https://stackoverflow.com/questions/59461280/vscode-error-an-incorrect-number-of-function-arguments-has-been-passed-for-fun
     if condition(left)
         return right + 1
     else
