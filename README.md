@@ -5,31 +5,31 @@ Advent of Code is a wonderful way for experienced programmers to practice a new 
 
 Below are my impression of the major theme for each day.
 
-# Daily Themes
-1. Loops, functions, and recursion (`map`/`reduce`)
-2. Assembly language basics
-3. Procedural programming, Cartesian space, complex arithmetic
-4. Conditions (`filter`)
-5. Assembly language jumps and conditions
-6. Basic graphs, Dijkstra's algorithm
-7. Concurrency, pipelining, encapsulation
-8. Image processing, multidimensional arrays
-9. Software engineering, testing and verification
-10. Number theory or floating point arithmetic, sorting and searching
+# Daily Themes and Stars
+1. `**` Loops, functions, and recursion (`map`/`reduce`)
+2. `**` Assembly language basics
+3. `**` Procedural programming, Cartesian space, complex arithmetic
+4. `**` Conditions (`filter`)
+5. `**` Assembly language jumps and conditions
+6. `**` Basic graphs, Dijkstra's algorithm
+7. `**` Concurrency, pipelining, encapsulation
+8. `**` Image processing, multidimensional arrays
+9. `**` Software engineering, testing and verification
+10. `**` Number theory or floating point arithmetic, sorting and searching
 11. 
-12. Attractors, number theory, large problems
-13. Games, reverse engineering
+12. `**` Attractors, number theory, large problems
+13. `**` Games, reverse engineering
 14. 
-15. Depth-first search
-16. Signal processing
-17. ASCII, scripting (meta-metaprogramming with Intcode!)
+15. `**` Depth-first search
+16. `* ` Signal processing
+17. `* ` ASCII, scripting (meta-metaprogramming with Intcode!)
 18. 
-19. Linear programming, dynamic programming, quadratic complexity
-20. Dijkstra's algorithm
+19. `**` Linear programming, dynamic programming, quadratic complexity
+20. `* ` Dijkstra's algorithm
 21. 
-22. Circular arrays, uhhh...
-23. Networking, concurrency
-24. Automata, binary tricks (`fold`/`nest`), recursion
+22. `* ` Circular arrays, uhhh...
+23. `**` Networking, concurrency
+24. `* ` Automata, binary tricks (`fold`/`nest`), recursion
 25. 
 
 # Lessons Learned
