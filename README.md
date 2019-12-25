@@ -3,7 +3,7 @@ This is my third year participating in [Advent of Code](https://adventofcode.com
 
 Advent of Code is a wonderful way for experienced programmers to practice a new language. The challenges get extremely difficult. The complexity and variety of the challenges will stress test any programming language, showing you where the language (and the programmer) are weak and strong.
 
-I *loved* the Intcode problems this year! This month of programming puzzles required most of what learned in my computer science degree *and more*.
+I *loved* the **Intcode** problems this year! This month of programming puzzles required most of what learned in my computer science degree *and more*.
 
 Below are my impression of the major theme for each day.
 
@@ -44,6 +44,10 @@ Julia's REPL is a joy to work in. Emacs-style keyboard shortcuts work. The built
 
 I used [GitHub Desktop](https://desktop.github.com/) to publish my programs. Someday I will get around to getting good at `git`, but for now this is good enough.
 
+There was one program that I reduced to my own [JavaScript Dijkstra solver](https://wjholden.com/dijkstra). Since then I have found the very robust [LightGraphs](https://juliagraphs.github.io/LightGraphs.jl/latest/) library.
+
+There was also one puzzle where I used Java for an [interactive GUI](https://www.youtube.com/watch?v=9d_-wP1aQCo). Julia could have done this, but I have no motivation to learn another windowing toolkit.
+
 ## General Julia Observations
 Much of what I learned this year were basics and tricks of the Julia language. Most of my programming experience is in Java, JavaScript, and *Mathematica*. My *Mathematica* adventure last year influenced my thought process than I realized. I eagerly reach for `filter`, `map`, and `reduce` when possible. I use lots of tuples and matrices. Functions would compose nicely in *Mathematica* and they compose equally well in Julia.
 
@@ -61,7 +65,7 @@ Julia does not have as rich a library as older and more popular languages (C++, 
 
 Strong typing saved me a few times.
 
-List comprehension is very powerufl. I had encountered [list comprehension in Python](https://www.artima.com/weblogs/viewpost.jsp?thread=98196) before, but it was not familiar enough to come to my mind quickly when solving puzzles. List comprehension is basically the same thing as *Mathematica's* `Array` function.
+List comprehension is very powerful (example: `[4 * row + col for row=0:5, col=1:4]`). I had encountered [list comprehension in Python](https://www.artima.com/weblogs/viewpost.jsp?thread=98196) before, but it was not familiar enough to come to my mind quickly when solving puzzles. List comprehension is basically the same thing as *Mathematica's* `Array` function.
 
 I think I only defined a `struct` once. The only module that I needed was to make my Intcode VM reusable. I did not learn Julia's exception handling mechanisms. I poked my little toe into Julia's concurrency and networking functions but I still have a lot to learn.
 
@@ -88,3 +92,6 @@ These are specific elements of the Julia language that I found particularly inte
 18. `elseif` took me a while to get used to.
 19. I miss the `switch` statement. While I can understand why no one wants to repeat the disastrous experience C gave us (see [Gustavo Silva on -Wimplicit-fallthrough in Linux](https://twitter.com/embeddedgus/status/1155206150104801282)), I really liked the sensible `switch` statement from *Mathematica* and Excel.
 20. You can accidentally overwrite reserved function names. Once, I used the word `values` for a variable, which gave a crazy error message when I tried to invoke the `values` function on a dictionary. This made me more cautious about naming things than I ever needed to be in Java.
+21. Vectorized functions are awesome! Just prefix any function with a `.` to apply that function element-wise to each member of an array. For example, to take the root of every member in a list you can enter `sqrt.(rand(8,4))`. This also works for binary operators, but for some reason you have to put the period first. For example, `17 .* rand(8,4)`. You can even use the "dot" syntax with *n*-ary functions, such as `string.(rand(0:0xffffffff, 12), base=16, pad=8)`. Maybe this is just a shorthand for `map`, but I still found it very convenient.
+22. `NaN != NaN` is *true*, as it is in other languages. Julia has some nice helper functions like `isfinite`, `isnan`, etc. Just type `is` into the REPL and press tab twice.
+23. Julia's `Sockets` library was very easy to use. The only language where I have any real networking experience to speak of is Java. Java's sockets are also easy to use, but they require lots of boilerplate code that you can (perhaps not safely...) ignore in Julia.
