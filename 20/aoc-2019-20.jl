@@ -28,10 +28,10 @@ for row in 1:(size(v)[1]-1)
             right = v[row + 1, col]
             down = v[row, col + 1]
             if right > 0
-                add_edge!(G, current, right) || throw(Exception("Could not insert edge"))
+                add_edge!(G, current, right) || error("Could not insert edge")
             end
             if down > 0
-                add_edge!(G, current, down) || throw(Exception("Could not insert edge"))
+                add_edge!(G, current, down) || error("Could not insert edge")
             end
         end
     end
@@ -70,7 +70,7 @@ end
 
 for kv in portals
     length(last(kv)) == 2 && (add_edge!(G, last(kv)[1], last(kv)[2]) ||
-        throw(Exception("Unable to insert edge")))
+        error("Unable to insert edge"))
 end
 
 #println(collect(edges(G)))
