@@ -12,7 +12,7 @@ I did not finish every day. Most of the missing stars are due to time constraint
 # Daily Themes and Stars
 1. `**` Loops, functions, and recursion (`map`/`reduce`)
 2. `**` Assembly language basics
-3. `**` Procedural programming, Cartesian space, complex arithmetic
+3. `**` Procedural programming, Cartesian space, complex arithmetic (`im`), key/value pairs (`Dict`), Manhattan distance
 4. `**` Conditions (`filter`)
 5. `**` Assembly language jumps and conditions
 6. `**` Basic graphs, Dijkstra's algorithm
