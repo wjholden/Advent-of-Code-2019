@@ -20,21 +20,21 @@ I did not finish every day. Most of the missing stars are due to time constraint
 8. `**` Image processing, multidimensional arrays
 9. `**` Software engineering, testing and verification
 10. `**` Number theory or floating point arithmetic, sorting and searching
-11. 
+11. `  `
 12. `**` Attractors, number theory, large problems
 13. `**` Games, reverse engineering
-14. 
+14. `  `
 15. `**` Depth-first search
 16. `* ` Signal processing, matrix multiplication
 17. `* ` ASCII, scripting (meta-metaprogramming with Intcode!)
-18. 
+18. `  `
 19. `**` Linear programming, dynamic programming, quadratic complexity
 20. `* ` Dijkstra's algorithm
-21. 
+21. `  `
 22. `* ` Circular arrays, uhhh...
 23. `**` Networking, concurrency
 24. `* ` Automata, binary tricks (`fold`/`nest`), recursion, whoa...
-25. 
+25. `  `
 
 # Hotwash
 ## Environment
