@@ -1,5 +1,5 @@
 # Advent of Code 2019
-This is my third year participating in [Advent of Code](https://adventofcode.com/2019). I look forward to this all year. Last year I tried *[Mathematica](https://wjholden.com/aoc/2018/)* and it was a great experience. This year: [Julia](https://julialang.org/)!
+This is my third year participating in [Advent of Code](https://adventofcode.com/2019). I look forward to this all year. Last year I tried *[Mathematica](https://wjholden.com/aoc/2018/)* and it was a [great experience](https://wjholden.com/aoc/2018/). This year: [Julia](https://julialang.org/)!
 
 Advent of Code is a wonderful way for experienced programmers to practice a new language. The challenges get extremely difficult. The complexity and variety of the challenges will stress test any programming language, showing you where the language (and the programmer) are weak and strong.
 
@@ -50,12 +50,14 @@ There was one program that I reduced to my own [JavaScript Dijkstra solver](http
 
 There was also one puzzle where I used Java for an [interactive GUI](https://www.youtube.com/watch?v=9d_-wP1aQCo). Julia could have done this, but I have no motivation to learn another windowing toolkit.
 
+In previous years I sometimes modified the input to make it easier to parse. I never felt the need to do this in 2019.
+
 ## General Julia Observations
-Much of what I learned this year were basics and tricks of the Julia language. Most of my programming experience is in Java, JavaScript, and *Mathematica*. My *Mathematica* adventure last year influenced my thought process than I realized. I eagerly reach for `filter`, `map`, and `reduce` when possible. I use lots of tuples and matrices. Functions would compose nicely in *Mathematica* and they compose equally well in Julia.
+Much of what I learned this year were basics and tricks of the Julia language. Most of my programming experience is in Java, JavaScript, and *Mathematica*. My *Mathematica* adventure last year has influenced my approach to programming more than I had realized. I eagerly reach for `filter`, `map`, and `reduce` when possible. I use lots of tuples and matrices. Functions compose nicely in *Mathematica* and they compose equally well in Julia.
 
-Things I really *do not* miss from *Mathematica* was the ugly double brackets for array indices (`x[[1]]`), anonymous function arguments (`#` and `#1, #2, ...`), ampersand notation (`&`) to denote pure functions, unweildy `Module` syntax and scoping, and poor performance. *Mathematica's* symbolic computation is very powerful but can be challenging to newcomers. I don't think I ever really felt like an Advent of Code problem could be better solved with symbolic computation.
+Things I really *do not* miss from *Mathematica* was the ugly double brackets for array indices (`x[[1]]`), anonymous function arguments (`#` and `#1, #2, ...`), ampersand notation (`&`) to denote pure functions, unweildy `Module` syntax and scoping, underscores after function parameters, the `:=` symbol, and slow performance. *Mathematica's* symbolic computation is very powerful but can be challenging to newcomers. I don't think I ever really felt like an Advent of Code problem could be better solved with symbolic computation.
 
-The big things I did miss from *Mathematica* were the `Nest` statement (to compute `f ∘ f ∘ ... ∘ f(x)`) and the beautiful visualizations. Julia has a [Plots](http://docs.juliaplots.org/latest/) package that I used a few times, but not as easily or frequently as last year. It might have made a difference if I had recently taken a math class using Julia.
+The big things I did miss from *Mathematica* were the `Nest` statement (to compute `f ∘ f ∘ ... ∘ f(x)`) and the powerful visualizations (`Plot`, `GraphPlot`, `ArrayPlot`, `NumberLinePlot`, `ListPlot`, `Manipulate`). Julia has a [Plots](http://docs.juliaplots.org/latest/) package that I used a few times, but not as easily or frequently as last year.
 
 Julia is extremely expressive. I love the syntax. I frequently thought about how tedious some of these programs would have been if I were still using Java. 
 
@@ -65,7 +67,7 @@ Julia does take second to "warm up." I assume this is all JIT. My day 7 solution
 
 Julia does not have as rich a library as older and more popular languages (C++, Java, Python) but it has a modest and growing ecosystem. The modules I used were OffsetArrays, Sockets, LightGraphs, Combinatorics (`permutations`), DelimitedFiles, Memoize, and LinearAlgebra (`norm`).
 
-Strong typing saved me a few times.
+Strong typing helped me a few times.
 
 List comprehension is very powerful (example: `[4 * row + col for row=0:5, col=1:4]`). I had encountered [list comprehension in Python](https://www.artima.com/weblogs/viewpost.jsp?thread=98196) before, but it was not familiar enough to come to my mind quickly when solving puzzles. List comprehension is basically the same thing as *Mathematica's* `Array` function.
 
