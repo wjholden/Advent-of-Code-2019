@@ -5,7 +5,9 @@ Advent of Code is a wonderful way for experienced programmers to practice a new 
 
 I *loved* the **Intcode** problems this year! This month of programming puzzles required most of what learned in my computer science degree *and more*.
 
-Below are my impression of the major theme for each day.
+It would be hard for me to choose a favorite. Day 7 was challenging. Day 9 was rewarding. Day 13 had a lot of room for creative solutions. Day 19 is a nice algorithmic learning opportunity. Day 23 was really fun for me, as I work in computer networking.
+
+I did not finish every day. Most of the missing stars are due to time constraints, but a few of them are problems I looked at and didn't know how to solve. I may go back and try to finish all 50, but probably not. Below are my impressions of the major theme for each day.
 
 # Daily Themes and Stars
 1. `**` Loops, functions, and recursion (`map`/`reduce`)
@@ -23,7 +25,7 @@ Below are my impression of the major theme for each day.
 13. `**` Games, reverse engineering
 14. 
 15. `**` Depth-first search
-16. `* ` Signal processing
+16. `* ` Signal processing, matrix multiplication
 17. `* ` ASCII, scripting (meta-metaprogramming with Intcode!)
 18. 
 19. `**` Linear programming, dynamic programming, quadratic complexity
