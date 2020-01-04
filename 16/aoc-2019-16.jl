@@ -33,3 +33,12 @@ input = readline(input_file)
 close(input_file)
 
 println("Day 16 Part 1: $(foldl(*, map(string, fft(input,100)[1:8])))")
+
+# I never really understood the problem statement for part 2. From Reddit,
+# it looks like I was not the only one.
+# The real signal is the puzzle input repeated 10000 times.
+signal = input ^ 10000
+
+# The message offset is the first seven digits.
+offset = parse(Int, signal[1:7])
+
